@@ -80,15 +80,15 @@ export default function musics() {
       price: 600,
       image_url:
             "https://images.unsplash.com/photo-1578841345191-037d88f2011c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        like: 1200,
+        like: 20,
         is_new: false,
     },
   ];
 
   return (
     <div className="text-black bg-gradient-to-b from-gray-900 via-gray-600 to-gray-300 grid place-items-center">
-      <h1 className=" text-white font-bold text-xl text-center m-4">Musical Instuments</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-[90%] border-2 rounded m-auto my-6 p-4 bg-slate-100">
+      <h1 className=" text-white font-bold text-xl text-center m-3">Musical Instuments</h1>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-[90%] border-2 rounded m-auto my-6 p-4 bg-gradient-to-b from-gray-300 to-gray-500 ">
       {instruments.map((instrument, index) => {
           return (
             <Props
