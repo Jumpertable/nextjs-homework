@@ -1,8 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import Props from "../components/props";
+import AddInstrument from "../components/updatingInstruments";
+import { button } from "framer-motion/client";
 
-
-export default function musics() {
-  const instruments = [
+export default function Musics() {
+  const [instruments, setInstruments] = useState([
     {
       name: "Fender Guitar",
       price: 300,
@@ -83,26 +87,40 @@ export default function musics() {
         like: 20,
         is_new: false,
     },
-  ];
+  ]);
+
+  const removeInstrument = (idToRemove: number) => {
+    const newInstruments = instruments.filter((_, index) => index !== idToRemove);
+    setInstruments(newInstruments);
+  };
 
   return (
     <div className="text-black bg-gradient-to-b from-gray-900 via-gray-600 to-gray-300 grid place-items-center">
       <h1 className=" text-white font-bold text-xl text-center m-3">Musical Instuments</h1>
+      
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-[90%] border-2 rounded m-auto my-6 p-4 bg-gradient-to-b from-gray-300 to-gray-500 ">
-      {instruments.map((instrument, index) => {
-          return (
-            <Props
-            key={index}
-            index={index}
-            instrumentsName={instrument.name}
-            price={instrument.price}
-            image_url={instrument.image_url}
-            like={instrument.like}
-              is_new={instrument.is_new}
-            />
-          );
-        })}
-      </div>
+      {instruments.map((instrument, index) => (
+  <div key={index} className="relative">
+    <Props
+      index={index}
+      instrumentsName={instrument.name}
+      price={instrument.price}
+      image_url={instrument.image_url}
+      like={instrument.like}
+      is_new={instrument.is_new}
+    />
+    <button
+      onClick={() => removeInstrument(index)}
+      className="absolute top-2 right-2 border-2 border-red-600 px-2 py-1 bg-red-500 text-white rounded hover:bg-blue-500 hover:border-teal-600
+    sm:px-2 sm:py-1.5 sm: md:px-1 md:py-1 md:right-[-16px]  lg:px-1 lg:py-1"
+          >
+      X
+    </button>
+  </div>
+))}
+      </div>     
+      <AddInstrument onAdd={(newInstrument) => setInstruments([...instruments, newInstrument])} />
     </div>
-  );
+
+  );  
 }
