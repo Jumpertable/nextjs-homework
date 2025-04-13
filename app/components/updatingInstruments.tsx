@@ -24,13 +24,13 @@ export default function updatingInstruments({ onAdd }: updatingInstruments) {
 
     onAdd({
       name,
-      price: parseFloat(price) || 0,
+      price: parseInt(price) || 0,
       image_url: imageUrl,
       like: parseInt(like) || 0,
       is_new: isNew,
     });
 
-    // Reset
+    // Reset everything to the begining
     setName("");
     setPrice("");
     setImageUrl("");
@@ -39,7 +39,7 @@ export default function updatingInstruments({ onAdd }: updatingInstruments) {
   };
 
   return (
-    <div className="my-6 flex flex-col items-center gap-2">
+    <div className="my-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
       <input
         className="border-2 border-gray-100 rounded-lg p-2 w-[250px]"
         type="text"
@@ -51,8 +51,10 @@ export default function updatingInstruments({ onAdd }: updatingInstruments) {
       <input
         className="border-2 border-gray-200 rounded-lg p-2 w-[250px]"
         type="number"
+        min={0}
         value={price}
-        onChange={(e) => setPrice}
+        onChange={(e) => setPrice(e.target.value)}
+        
         placeholder="Add a price"
       />
 
@@ -60,19 +62,19 @@ export default function updatingInstruments({ onAdd }: updatingInstruments) {
         className="border-2 border-gray-300 rounded-lg p-2 w-[250px]"
         type="text"
         value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
+        onChange={(e) => setImageUrl}
         placeholder="Add an image URL"
       />
 
       <input
-        className="border-2 border-gray-400 rounded-lg p-2 w-[250px]"
+        className="border-2 border-gray-400 rounded-lg p-2 w-[250px] "
         type="number"
         value={like}
-        onChange={(e) => setLike}
+        onChange={(e) => setLike(e.target.value)}
         placeholder="Add likes"
       />
 
-      <label className="underline flex items-center gap-2">
+      <label className="underline flex items-center gap-2 ">
         <input
           type="checkbox"
           checked={isNew}
