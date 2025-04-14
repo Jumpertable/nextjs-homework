@@ -1,4 +1,3 @@
-
 export default function buy() {
     return (
         <div className="text-black bg-gradient-to-b from-green-200 to-orange-400 h-screen grid place-items-center">

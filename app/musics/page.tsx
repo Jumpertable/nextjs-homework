@@ -4,6 +4,7 @@ import { useState } from "react";
 import Props from "../components/props";
 import AddInstrument from "../components/updatingInstruments";
 import { Pencil, SquareX } from "lucide-react";
+import Link from "next/link";
 
 export default function Musics() {
   const [editIndex, setEditIndex] = useState(0);
@@ -141,7 +142,7 @@ export default function Musics() {
                   onChange={updateInstruments}
                 />
               ) : (
-                  <p>{instrument.name}</p>
+                <p>{instrument.name}</p>
               )}
               <Pencil onClick={() => editInstruments(index)} />
             </li>
@@ -149,11 +150,19 @@ export default function Musics() {
         ))}
       </div>
 
-      <AddInstrument
-        onAdd={(newInstrument) =>
-          setInstruments([...instruments, newInstrument])
-        }
-      />
+      <div className="flex items-center gap-4 mt-6">
+        <AddInstrument
+          onAdd={(newInstrument) =>
+            setInstruments([...instruments, newInstrument])
+          }
+        />
+
+        <Link href="/Album">
+          <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800  hover:scale-105 transition active:scale-90 transition">
+            Go to Album 👉
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
