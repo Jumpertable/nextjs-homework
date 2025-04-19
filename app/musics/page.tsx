@@ -1,166 +1,95 @@
 "use client";
 
-import { useState } from "react";
-import Props from "../components/props";
-import AddInstrument from "../components/updatingInstruments";
-import { Pencil, SquareX } from "lucide-react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import MusicType from "./music.type";
+import DestroyButton from "./DestroyButton";
 
-export default function Musics() {
-  const [editIndex, setEditIndex] = useState(0);
-  const [instruments, setInstruments] = useState([
-    {
-      name: "Fender Guitar",
-      price: 300,
-      image_url:
-        "https://images.unsplash.com/photo-1613032970340-7846189c1cbe?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 20,
-      is_new: true,
-    },
-    {
-      name: "Grand Piano",
-      price: 30000,
-      image_url:
-        "https://images.unsplash.com/photo-1648948303220-8dbdb7d0df65?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 40,
-      is_new: false,
-    },
-    {
-      name: "Saxophone",
-      price: 1000,
-      image_url:
-        "https://images.unsplash.com/photo-1623123776919-e5208e9b0b47?q=80&w=1214&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 25,
-      is_new: true,
-    },
-    {
-      name: "Höfner Bass Guitar",
-      price: 8000,
-      image_url:
-        "https://images.unsplash.com/photo-1657896003520-ca33001fd4f3?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fEglQzMlQjZmbmVyJTIwQmFzcyUyMEd1aXRhcnxlbnwwfHwwfHx8MA%3D%3D",
-      like: 55,
-      is_new: false,
-    },
-    {
-      name: "Yamaha Trumpet",
-      price: 600,
-      image_url:
-        "https://images.unsplash.com/photo-1573871666457-7c7329118cf9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 20,
-      is_new: true,
-    },
-    {
-      name: "Altus Flute",
-      price: 700,
-      image_url:
-        "https://images.unsplash.com/photo-1514213949578-58fe7b8ff146?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 70,
-      is_new: true,
-    },
-    {
-      name: "SONOR Drums",
-      price: 1000,
-      image_url:
-        "https://images.unsplash.com/photo-1602939444907-6e688c594a66?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 30,
-      is_new: true,
-    },
-    {
-      name: "Taylor Acoustic Guitar",
-      price: 300,
-      image_url:
-        "https://images.unsplash.com/photo-1588449668365-d15e397f6787?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 40,
-      is_new: false,
-    },
-    {
-      name: "Yamaha Cello",
-      price: 2000,
-      image_url:
-        "https://images.unsplash.com/photo-1570906166424-698571d1dc15?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 25,
-      is_new: true,
-    },
-    {
-      name: "Hohner Accordion",
-      price: 600,
-      image_url:
-        "https://images.unsplash.com/photo-1578841345191-037d88f2011c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      like: 20,
-      is_new: false,
-    },
-  ]);
+export default function MusicPage() {
+  const [musics, setMusics] = useState<MusicType[]>([]);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  const removeInstrument = (index: number) => {
-    const newInstruments = instruments.filter((_, i) => i !== index);
-    setInstruments(newInstruments);
-  };
+  useEffect(() => {
+    setHasMounted(true);
 
-  const editInstruments = (index: number) => {
-    setEditIndex(index);
-  };
+    const fetchMusics = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/music");
+        const data = await res.json();
+        setMusics(data);
+      } catch (err) {
+        console.error("Failed to fetch musics", err);
+      }
+    };
 
-  const updateInstruments = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInstruments(
-      instruments.map((instrument, index) => {
-        if (index === editIndex) {
-          return {
-            ...instrument,
-            name: e.target.value,
-          };
-        }
-        return instrument;
-      })
-    );
-  };
+    fetchMusics();
+  }, []);
+
+  if (!hasMounted) return null;
 
   return (
-    <div className="text-black bg-gradient-to-b from-gray-900 via-gray-600 to-gray-300 grid place-items-center">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-[90%] border-2 rounded m-auto my-6 p-4 bg-gradient-to-b from-gray-300 to-gray-500 ">
-        {instruments.map((instrument, index) => (
-          <div key={index} className="relative">
-            <Props
-              index={index}
-              instrumentsName={instrument.name}
-              price={instrument.price}
-              image_url={instrument.image_url}
-              like={instrument.like}
-              is_new={instrument.is_new}
-            />
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-300 py-10 px-4 text-white">
+      <h1 className="text-2xl font-extrabold mb-6 text-center drop-shadow">
+        Music List
+      </h1>
 
-            <li
-              key={index}
-              className="flex items-center gap-4 border-b-2 border-gray-300 p-2"
+      {musics.length === 0 ? (
+        <div className="text-center text-white animate-pulse">
+          Loading Music...
+        </div>
+      ) : (
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          {musics.map((music, index) => (
+            <div
+              key={music.id}
+              className="bg-white text-black p-6 rounded-xl shadow-md hover:scale-[1.01] transition"
             >
-              <SquareX onClick={() => removeInstrument(index)} />
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-lg font-bold">
+                  {music.id}. {music.music_name}
+                </h2>
+                <span
+                  className={`px-2 py-1 rounded text-xs font-medium ${
+                    music.is_new
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {music.is_new ? "New Release" : "Classic"}
+                </span>
+              </div>
+              <p className="text-sm mb-1">
+                <span className="font-semibold">Price:</span> ${music.price}
+              </p>
+              <p className="text-sm mb-3">
+                <span className="font-semibold">Brand:</span> {music.brand}
+              </p>
 
-              {editIndex === index ? (
-                <input
-                  className="border-2 border-blue-300 rounded-lg w-auto text-center"
-                  type="text"
-                  value={instrument.name}
-                  onChange={updateInstruments}
+              <div className="flex justify-end gap-2">
+                <Link
+                  className="px-4 py-1 bg-blue-400 text-white rounded hover:bg-blue-500"
+                  href={`/musics/edit/${music.id}`}
+                >
+                  Edit
+                </Link>
+                <DestroyButton
+                  id={music.id}
+                  onDelete={() => {
+                    setMusics((prev) => prev.filter((m) => m.id !== music.id));
+                  }}
                 />
-              ) : (
-                <p>{instrument.name}</p>
-              )}
-              <Pencil onClick={() => editInstruments(index)} />
-            </li>
-          </div>
-        ))}
-      </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
-      <div className="flex items-center gap-4 mt-6">
-        <AddInstrument
-          onAdd={(newInstrument) =>
-            setInstruments([...instruments, newInstrument])
-          }
-        />
-
-        <Link href="/Album">
-          <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800  hover:scale-105 transition active:scale-90 transition">
-            Go to Album 👉
-          </button>
+      <div className="text-center">
+        <Link
+          href="/musics/new"
+          className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Add New Music
         </Link>
       </div>
     </div>
