@@ -79,7 +79,7 @@ export default function EditForm({ customer }: { customer: CustomerType }) {
                 </div>
                 <div>
                     <button
-                        className="border px-4 py-2 rounded bg-blue-400"
+                        className="border px-4 py-2 rounded bg-blue-100"
                         type="submit">Update
                     </button>
                 </div>

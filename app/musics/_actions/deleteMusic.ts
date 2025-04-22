@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 const deleteMusic = async (id: number) => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo3LCJpYXQiOjE3NDQ5NTI2MTAsImV4cCI6MTc0NTAzOTAxMH0.AACWVXpe2wnctLtRScrjwzVnjBoFP7iD6TsA7XWi7Tw';
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJpYXQiOjE3NDUyODgxMjksImV4cCI6MTc0NTM3NDUyOX0.PNMzG9aaMtwhSxtmQeCzB023MDrhFdBL2qn9630FUts';
     
     console.log("id: ", id)
     const res = await fetch(`http://localhost:3000/music/${id}`, {

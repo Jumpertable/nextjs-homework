@@ -77,12 +77,12 @@ export default function AddNew() {
                 </div>
                 <div>
                     <button
-                        className="border px-4 py-2 rounded bg-blue-500"
+                        className="border px-4 py-2 rounded bg-blue-100"
                         type="submit">Add
                     </button>
                     <button
-                        className="border px-4 py-2 rounded bg-red-500 ml-2"
-                        type="reset">Reset</button>
+                        className="border px-4 py-2 rounded bg-red-100 ml-2"
+                        type="reset">reset</button>
                 </div>
             </form>
         </>

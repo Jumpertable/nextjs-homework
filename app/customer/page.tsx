@@ -1,103 +1,102 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import DeleteButton from "./DeleteButton";
 import CustomerType from "./customer.type";
+import DeleteButton from "./DeleteButton";
+import { SERVER_URL } from "../constant";
+import { cookies } from "next/headers";
 
-export default function CustomerPage() {
-  const [customers, setCustomers] = useState<CustomerType[]>([]);
-  const [hasMounted, setHasMounted] = useState(false);
+type RegisteredUser = {
+  id: number;
+  username: string;
+  email: string;
+};
 
-  useEffect(() => {
-    setHasMounted(true);
+export default async function CustomerPage() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("access_token")?.value;
 
-    const fetchCustomers = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/customer");
-        const data = await res.json();
-        setCustomers(data);
-      } catch (err) {
-        console.error("Failed to fetch customers", err);
-      }
-    };
+  const customerRes = await fetch(`${SERVER_URL}/customer`, {
+    cache: "no-store",
+  });
 
-    fetchCustomers();
-  }, []);
+  const userRes = await fetch(`${SERVER_URL}/auth/all`, {
+    headers: {
+      Cookie: `access_token=${token}`,
+    },
+    cache: "no-store",
+  });
 
-  if (!hasMounted) return null;
+  const customers: CustomerType[] = await customerRes.json();
+  const usersRaw = await userRes.json();
+
+  const users: RegisteredUser[] = Array.isArray(usersRaw) ? usersRaw : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-100 to-purple-600 py-10 px-4 text-purple-700">
-      <h1 className="text-2xl font-extrabold mb-6 text-center drop-shadow">
-        Customer List
-      </h1>
-
-      {customers.length === 0 ? (
-        <div className="text-center text-purple-500 animate-pulse">
-          Loading Customers...
-        </div>
-      ) : (
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+    <div className="w-[90%] mx-auto min-h-[80vh] p-8 space-y-12">
+      {/* CUSTOMER SECTION */}
+      <section>
+        <h1 className="text-xl font-bold mb-4">Customers</h1>
+        <div className="flex flex-wrap gap-6 mb-2">
           {customers.map((customer, index) => (
             <div
+              className={`flex flex-col justify-between mb-6 min-w-96 min-h-52 p-4 rounded-lg shadow-lg bg-white`}
               key={customer.id}
-              className="bg-white p-6 rounded-xl shadow-md hover:scale-[1.01] transition"
             >
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-bold">
-                  {customer.id}. {customer.name}
-                </h2>
-                <span
-                  className={`px-2 py-1 rounded text-xs font-medium ${
-                    customer.isActive
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-600"
-                  }`}
-                >
-                  {customer.isActive ? "Active" : "Inactive"}
-                </span>
+              <div>
+                <div className="flex">
+                  <span>{index + 1}</span>
+                  <span className="ml-2 mr-auto">{customer.name}</span>
+                  <span
+                    className={`${
+                      customer.isActive ? "bg-yellow-200" : "bg-orange-200"
+                    } border border-black px-2 rounded-md`}
+                  >
+                    {customer.isActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+                <div>{customer.position}</div>
+                <div>{customer.email}</div>
+                <div>{customer.phone}</div>
               </div>
-              <p className="text-sm mb-1">
-                <span className="font-semibold">Position:</span>{" "}
-                {customer.position}
-              </p>
-              <p className="text-sm mb-1">
-                <span className="font-semibold">Email:</span> {customer.email}
-              </p>
-              <p className="text-sm mb-3">
-                <span className="font-semibold">Phone:</span> {customer.phone}
-              </p>
 
-              <div className="flex justify-end gap-2">
+              <div className="mt-4 flex justify-end gap-2">
                 <Link
-                  className="px-4 py-1 bg-blue-400 text-blue-900 rounded  hover:bg-blue-500 hover:text-white"
+                  className="p-2 bg-green-100 rounded-md border shadow-md"
                   href={`/customer/edit/${customer.id}`}
                 >
                   Edit
                 </Link>
-                <DeleteButton
-                  id={customer.id}
-                  onDelete={() => {
-                    setCustomers((prev) =>
-                      prev.filter((c) => c.id !== customer.id)
-                    );
-                  }}
-                />
+                <DeleteButton id={customer.id} />
               </div>
             </div>
           ))}
         </div>
-      )}
 
-      <div className="text-center">
         <Link
+          className="p-2 bg-blue-200 rounded-md hover:bg-blue-700 hover:text-white"
           href="/customer/new"
-          className="inline-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          Add New Customer
+          Add New
         </Link>
-      </div>
+      </section>
+
+      {/* REGISTERED USERS SECTION */}
+      <section>
+        <h2 className="text-xl font-bold mb-4">Registered Users</h2>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+          {users.map((user) => (
+            <div
+              key={user.id}
+              className="p-4 rounded-md border shadow bg-white"
+            >
+              <div className="font-semibold text-gray-700">
+                {user.username}
+              </div>
+              <div className="text-sm text-gray-500">{user.email}</div>
+              <div className="text-xs text-gray-400 mt-1">ID: {user.id}</div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
