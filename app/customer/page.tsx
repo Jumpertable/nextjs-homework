@@ -12,7 +12,7 @@ type RegisteredUser = {
 
 export default async function CustomerPage() {
   const cookieStore = cookies();
-  const token = cookieStore.get("access_token")?.value;
+  const token = (await cookieStore).get("access_token")?.value;
 
   const customerRes = await fetch(`${SERVER_URL}/customer`, {
     cache: "no-store",
